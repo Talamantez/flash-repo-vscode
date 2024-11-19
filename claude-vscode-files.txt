@@ -1,8 +1,21 @@
+=== File: .\src\extension.ts ===
+
 // src/extension.ts
 import * as vscode from 'vscode';
 import * as fs from 'fs';
 import * as path from 'path';
-import { FlashRepoConfig, FileStats } from './types';
+
+interface FlashRepoConfig {
+    excludedDirs: string[];
+    excludedFiles: string[];
+    includedExtensions: string[];
+}
+
+interface FileStats {
+    path: string;
+    size: number;
+    characters: number;
+}
 
 const DEFAULT_CONFIG: FlashRepoConfig = {
     excludedDirs: ['.git', 'node_modules', 'dist', 'build'],
@@ -27,7 +40,7 @@ async function findFiles(rootPath: string, config: FlashRepoConfig): Promise<Fil
 
         for (const entry of entries) {
             const fullPath = path.join(dir, entry.name);
-
+            
             if (entry.isDirectory()) {
                 const shouldExclude = config.excludedDirs.some(
                     excludedDir => entry.name === excludedDir
@@ -42,14 +55,13 @@ async function findFiles(rootPath: string, config: FlashRepoConfig): Promise<Fil
                 const hasIncludedExtension = config.includedExtensions.some(
                     ext => entry.name.endsWith(ext)
                 );
-
+                
                 if (!isExcluded && hasIncludedExtension) {
                     const content = await fs.promises.readFile(fullPath, 'utf8');
                     files.push({
                         path: fullPath,
                         size: content.length,
-                        characters: content.length,
-                        extension: path.extname(fullPath)
+                        characters: content.length
                     });
                 }
             }
@@ -63,7 +75,7 @@ async function findFiles(rootPath: string, config: FlashRepoConfig): Promise<Fil
 function generateSummary(files: FileStats[]): string {
     const totalChars = files.reduce((sum, file) => sum + file.characters, 0);
     const totalFiles = files.length;
-
+    
     const summary = [
         '=== Flash Repo Summary ===',
         `Total Files: ${totalFiles}`,
@@ -104,8 +116,7 @@ async function createOutputDocument(content: string): Promise<void> {
     });
 }
 
-// Just the activate function part
-export function activate(context: vscode.ExtensionContext): void {
+export async function activate(context: vscode.ExtensionContext) {
     const disposable = vscode.commands.registerCommand('flash-repo.concatenate', async () => {
         try {
             const workspaceFolders = vscode.workspace.workspaceFolders;
@@ -122,10 +133,10 @@ export function activate(context: vscode.ExtensionContext): void {
             try {
                 const files = await findFiles(rootPath, config);
                 const totalChars = files.reduce((sum, file) => sum + file.characters, 0);
-
-                if (totalChars > 100000) {
+                
+                if (totalChars > 100000) {  // Warning if over 100K chars
                     const proceed = await vscode.window.showWarningMessage(
-                        `Large codebase (${Math.round(totalChars / 1000)}K chars) may exceed context limits. Continue?`,
+                        `Large codebase (${Math.round(totalChars/1000)}K chars) may exceed context limits. Continue?`,
                         'Yes', 'No'
                     );
                     if (proceed !== 'Yes') {
@@ -137,21 +148,45 @@ export function activate(context: vscode.ExtensionContext): void {
                 await createOutputDocument(content);
 
                 // Show success message with stats
-                void vscode.window.showInformationMessage(
-                    `Concatenated ${files.length} files (${Math.round(totalChars / 1000)}K chars)`
+                vscode.window.showInformationMessage(
+                    `Concatenated ${files.length} files (${Math.round(totalChars/1000)}K chars)`
                 );
             } finally {
                 statusBar.dispose();
             }
         } catch (error) {
             const message = error instanceof Error ? error.message : 'Unknown error';
-            void vscode.window.showErrorMessage(`Flash Repo Error: ${message}`);
+            vscode.window.showErrorMessage(`Flash Repo Error: ${message}`);
         }
     });
 
     context.subscriptions.push(disposable);
 }
 
-export function deactivate(): void {
-    // Cleanup if needed
-}
+export function deactivate() {}
+
+=== File: .\src\api.ts ===
+
+
+
+=== File: .\src\config.ts ===
+
+
+
+=== File: .\src\services\claude-api.ts ===
+
+
+
+=== File: .\test\runTest.ts ===
+
+
+
+=== File: .\test\suite\extension.test.ts ===
+
+
+
+=== File: .\test\suite\index.ts ===
+
+
+
+
