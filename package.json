@@ -1,0 +1,60 @@
+{
+  "name": "flash-repo",
+  "displayName": "Flash Repo",
+  "description": "Concatenate repository files for Claude context",
+  "version": "0.1.0",
+  "engines": {
+      "vscode": "^1.80.0"
+  },
+  "categories": ["Other"],
+  "activationEvents": ["onStartupFinished"],
+  "main": "./dist/extension.js",
+  "scripts": {
+      "vscode:prepublish": "npm run compile",
+      "compile": "tsc -p ./",
+      "watch": "tsc -watch -p ./",
+      "pretest": "npm run compile"
+  },
+  "devDependencies": {
+      "@types/node": "^16.x",
+      "@types/vscode": "^1.80.0",
+      "@vscode/test-electron": "^2.3.8",
+      "typescript": "^5.0.0"
+  },
+  "contributes": {
+      "commands": [{
+          "command": "flash-repo.concatenate",
+          "title": "Flash Repo: Concatenate Files"
+      }],
+      "menus": {
+          "editor/context": [{
+              "command": "flash-repo.concatenate",
+              "group": "navigation"
+          }],
+          "explorer/context": [{
+              "command": "flash-repo.concatenate",
+              "group": "navigation"
+          }]
+      },
+      "configuration": {
+          "title": "Flash Repo",
+          "properties": {
+              "flash-repo.excludedDirectories": {
+                  "type": "array",
+                  "default": [".git", "node_modules", "dist", "build"],
+                  "description": "Directories to exclude from concatenation"
+              },
+              "flash-repo.excludedFiles": {
+                  "type": "array",
+                  "default": ["package-lock.json", "yarn.lock"],
+                  "description": "Files to exclude from concatenation"
+              },
+              "flash-repo.includedExtensions": {
+                  "type": "array",
+                  "default": [".ts", ".js", ".py", ".java", ".cpp", ".h", ".jsx", ".tsx"],
+                  "description": "File extensions to include in concatenation"
+              }
+          }
+      }
+  }
+}
