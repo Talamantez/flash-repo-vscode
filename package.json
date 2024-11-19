@@ -1,25 +1,38 @@
 {
     "name": "flash-repo",
     "displayName": "Flash Repo",
-    "description": "Concatenate repository files for AI context",
-    "version": "0.1.0",
-    "publisher": "YourPublisherName",
+    "description": "Easily concatenate repository files for AI context sharing",
+    "version": "1.0.0",
+    "publisher": "conscious-robot",
+    "license": "MIT",
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/conscious-robot/flash-repo-vscode"
+    },
     "engines": {
         "vscode": "^1.80.0"
     },
-    "categories": ["Other"],
+    "categories": [
+        "Other",
+        "Programming Languages",
+        "Formatters"
+    ],
+    "keywords": [
+        "concatenate",
+        "files",
+        "ai",
+        "claude",
+        "context"
+    ],
     "activationEvents": ["onStartupFinished"],
-    "main": "./dist/extension.js",
+    "main": "./out/extension.js",
     "scripts": {
         "vscode:prepublish": "pnpm run compile",
         "compile": "tsc -p ./",
         "watch": "tsc -watch -p ./",
         "pretest": "pnpm run compile && pnpm run lint",
         "lint": "eslint \"src/**/*.ts\"",
-        "lint:fix": "eslint \"src/**/*.ts\" --fix",
         "test": "node ./out/test/runTest.js",
-        "typecheck": "tsc --noEmit",
-        "format": "prettier --write \"src/**/*.ts\"",
         "package": "vsce package",
         "publish": "vsce publish"
     },
@@ -38,7 +51,12 @@
         "mocha": "^10.1.0",
         "prettier": "^2.8.8",
         "sinon": "^15.1.0",
-        "typescript": "4.9.5"
+        "typescript": "4.9.5",
+        "safe-publish-latest": "^2.0.0",
+        "tape": "^5.7.4"
+    },
+    "peerDependencies": {
+        "define-data-property": "^1.1.4"
     },
     "contributes": {
         "commands": [{
