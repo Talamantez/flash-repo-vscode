@@ -1,5 +1,11 @@
 # Change Log
 
+
+## [1.0.2] - 2024-03-19
+
+### Added
+ - Branded icon 
+
 ## [1.0.1] - 2024-03-19
 
 ### Updated

@@ -2,7 +2,7 @@
     "name": "flash-repo",
     "displayName": "Flash Repo",
     "description": "Easily concatenate repository files for AI context sharing",
-    "version": "1.0.1",
+    "version": "1.0.4",
     "publisher": "conscious-robot",
     "license": "MIT",
     "repository": {
@@ -26,6 +26,7 @@
     ],
     "activationEvents": ["onStartupFinished"],
     "main": "./out/extension.js",
+    "icon": "icon.png",
     "scripts": {
         "vscode:prepublish": "pnpm run compile",
         "compile": "tsc -p ./",
