@@ -1,5 +1,10 @@
 # Change Log
 
+## [1.0.1] - 2024-03-19
+
+### Updated
+ - Corrected "buy me a coffee" link in README.md 
+
 ## [1.0.0] - 2024-03-19
 
 ### Added
