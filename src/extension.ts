@@ -4,6 +4,7 @@ import * as fs from 'fs';
 import * as path from 'path';
 import { FlashRepoConfig, FileStats } from './types';
 import { getConfiguration } from './utils';
+import { LicenseService } from './services/license-service';
 
 export async function findFiles(rootPath: string, config: FlashRepoConfig): Promise<FileStats[]> {
     const files: FileStats[] = [];
@@ -65,8 +66,78 @@ export function generateSummary(files: FileStats[]): string {
 }
 
 export function activate(context: vscode.ExtensionContext): void {
-    const disposable = vscode.commands.registerCommand('flash-repo.concatenate', async () => {
+    // Initialize license service
+    const licenseService = new LicenseService(context);
+    void licenseService.initializeLicense();
+    void licenseService.showLicenseStatus();
+
+    // Create status bar for license status
+    const statusBar = vscode.window.createStatusBarItem(vscode.StatusBarAlignment.Right, 100);
+    statusBar.command = 'flash-repo.showLicense';
+    context.subscriptions.push(statusBar);
+
+    // Update license status bar
+    async function updateLicenseStatus(): Promise<void> {
+        const license = await licenseService.getLicenseInfo();
+        if (!license) {
+            statusBar.hide();
+            return;
+        }
+
+        if (license.isTrial && license.trialEndsAt) {
+            const daysLeft = Math.max(0, Math.ceil((license.trialEndsAt.getTime() - Date.now()) / (1000 * 60 * 60 * 24)));
+            if (daysLeft > 0) {
+                statusBar.text = `$(clock) Flash Repo: ${daysLeft}d trial left`;
+                statusBar.tooltip = 'Click to purchase Flash Repo Pro';
+                statusBar.show();
+            } else {
+                statusBar.text = '$(alert) Flash Repo: Trial expired';
+                statusBar.tooltip = 'Click to purchase Flash Repo Pro';
+                statusBar.show();
+            }
+        } else if (!license.isTrial && license.isValid) {
+            statusBar.text = '$(verified) Flash Repo Pro';
+            statusBar.tooltip = 'Licensed version';
+            statusBar.show();
+        }
+    }
+
+    // Register license status command
+    const licenseStatusCommand = vscode.commands.registerCommand('flash-repo.showLicense', async () => {
+        await licenseService.showLicenseStatus();
+    });
+    context.subscriptions.push(licenseStatusCommand);
+
+    // Register purchase command
+    const purchaseCommand = vscode.commands.registerCommand('flash-repo.purchase', () => {
+        void vscode.env.openExternal(
+            vscode.Uri.parse('https://marketplace.visualstudio.com/items?itemName=conscious-robot.flash-repo-vscode')
+        );
+    });
+    context.subscriptions.push(purchaseCommand);
+
+    // Main command registration
+    const mainCommand = vscode.commands.registerCommand('flash-repo.concatenate', async () => {
         try {
+            // Check license status before executing command
+            const isValid = await licenseService.validateLicense();
+            if (!isValid) {
+                const license = await licenseService.getLicenseInfo();
+                if (license?.isTrial) {
+                    await licenseService.showLicenseStatus();
+                } else {
+                    void vscode.window.showErrorMessage(
+                        'Flash Repo Pro license required. Purchase now for just $9.99!',
+                        'Purchase Now'
+                    ).then(selection => {
+                        if (selection === 'Purchase Now') {
+                            void vscode.commands.executeCommand('flash-repo.purchase');
+                        }
+                    });
+                }
+                return;
+            }
+
             const workspaceFolders = vscode.workspace.workspaceFolders;
             if (!workspaceFolders) {
                 throw new Error('No workspace folder open');
@@ -74,9 +145,9 @@ export function activate(context: vscode.ExtensionContext): void {
 
             const config = getConfiguration();
             const rootPath = workspaceFolders[0].uri.fsPath;
-            const statusBar = vscode.window.createStatusBarItem(vscode.StatusBarAlignment.Right);
-            statusBar.text = "$(sync~spin) Flash Repo: Processing...";
-            statusBar.show();
+            const processingStatus = vscode.window.createStatusBarItem(vscode.StatusBarAlignment.Right);
+            processingStatus.text = "$(sync~spin) Flash Repo: Processing...";
+            processingStatus.show();
 
             try {
                 const files = await findFiles(rootPath, config);
@@ -114,7 +185,7 @@ export function activate(context: vscode.ExtensionContext): void {
                     `Concatenated ${files.length} files (${Math.round(totalChars / 1000)}K chars)`
                 );
             } finally {
-                statusBar.dispose();
+                processingStatus.dispose();
             }
         } catch (error) {
             const message = error instanceof Error ? error.message : 'Unknown error';
@@ -122,7 +193,15 @@ export function activate(context: vscode.ExtensionContext): void {
         }
     });
 
-    context.subscriptions.push(disposable);
+    // Initial status update
+    void updateLicenseStatus();
+
+    // Update status every hour
+    setInterval(() => {
+        void updateLicenseStatus();
+    }, 60 * 60 * 1000);
+
+    context.subscriptions.push(mainCommand);
 }
 
 export function deactivate(): void {

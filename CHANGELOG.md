@@ -2,6 +2,10 @@
 
 All notable changes to Flash Repo will be documented in this file.
 
+## [2.0.6] - 2024-11-27
+### Fixed
+- Initialized trial service in extension file
+
 ## [2.0.4] - 2024-11-27
 ### Updated
 - Update package.json with License, visibility info

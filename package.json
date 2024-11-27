@@ -1,20 +1,10 @@
 {
   "name": "flash-repo-vscode",
   "displayName": "Flash Repo Snapshot",
-  "description": "Quickly concatenate and analyze repository contents",
-  "version": "2.0.5",
   "publisher": "conscious-robot",
+  "description": "Quickly concatenate your repository files into a single document - perfect for AI analysis!",
+  "version": "2.0.6",
   "pricing": "Trial",
-  "private": false,
-  "license": "SEE LICENSE IN LICENSE.md",
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/Talamantez/flash-repo-vscode"
-  },
-  "galleryBanner": {
-    "color": "#2F3437",
-    "theme": "dark"
-  },
   "engines": {
     "vscode": "^1.60.0"
   },
@@ -22,55 +12,34 @@
     "Other"
   ],
   "icon": "icon.png",
-  "keywords": [
-    "repository",
-    "concatenate",
-    "files",
-    "analysis",
-    "claude",
-    "ai",
-    "assistant",
-    "anthropic",
-    "code",
-    "documentation",
-    "productivity",
-    "claudeai"
-  ],
-  "activationEvents": [
-    "onCommand:flash-repo.concatenate"
-  ],
+  "galleryBanner": {
+    "color": "#000000",
+    "theme": "dark"
+  },
+  "license": "SEE LICENSE IN LICENSE.md",
+  "homepage": "https://github.com/talamantez/flash-repo-vscode/blob/main/README.md",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/talamantez/flash-repo-vscode.git"
+  },
+  "bugs": {
+    "url": "https://github.com/talamantez/flash-repo-vscode/issues"
+  },
+  "activationEvents": [],
   "main": "./dist/extension.js",
-  "scripts": {
-    "build": "tsc -p ./tsconfig.json && esbuild src/extension.ts --bundle --outfile=dist/extension.js --external:vscode --format=cjs --platform=node --minify",
-    "verify": "pnpm run build && pnpm run test",
-    "vscode:prepublish": "pnpm run verify",
-    "watch": "node esbuild.js --watch",
-    "package": "pnpm run verify && vsce package",
-    "publish": "pnpm run verify && vsce publish",
-    "pretest": "pnpm run build && pnpm run compile-tests",
-    "test": "xvfb-run --auto-servernum --server-args='-screen 0 1024x768x24' node --force-node-api-uncaught-exceptions-policy=true ./out/test/runTest.js",
-    "compile-tests": "tsc -p ./tsconfig.test.json",
-    "watch-tests": "tsc -p ./tsconfig.test.json --watch"
-  },
-  "devDependencies": {
-    "@types/glob": "^8.1.0",
-    "@types/mocha": "^10.0.1",
-    "@types/node": "^18.15.11",
-    "@types/vscode": "^1.60.0",
-    "@typescript-eslint/eslint-plugin": "^5.59.0",
-    "@typescript-eslint/parser": "^5.59.0",
-    "@vscode/test-electron": "^2.3.0",
-    "esbuild": "^0.17.17",
-    "eslint": "^8.38.0",
-    "glob": "^10.2.2",
-    "mocha": "^10.2.0",
-    "typescript": "^5.0.4"
-  },
   "contributes": {
     "commands": [
       {
         "command": "flash-repo.concatenate",
         "title": "Flash Repo: Concatenate Repository Files"
+      },
+      {
+        "command": "flash-repo.showLicense",
+        "title": "Flash Repo: Show License Status"
+      },
+      {
+        "command": "flash-repo.purchase",
+        "title": "Flash Repo: Purchase License"
       }
     ],
     "configuration": {
@@ -84,10 +53,7 @@
             "dist",
             "build"
           ],
-          "description": "Directories to exclude from concatenation",
-          "items": {
-            "type": "string"
-          }
+          "description": "Directories to exclude from concatenation"
         },
         "flash-repo.excludedFiles": {
           "type": "array",
@@ -95,10 +61,7 @@
             "package-lock.json",
             "yarn.lock"
           ],
-          "description": "Files to exclude from concatenation",
-          "items": {
-            "type": "string"
-          }
+          "description": "Files to exclude from concatenation"
         },
         "flash-repo.includedExtensions": {
           "type": "array",
@@ -112,12 +75,35 @@
             ".jsx",
             ".tsx"
           ],
-          "description": "File extensions to include in concatenation",
-          "items": {
-            "type": "string"
-          }
+          "description": "File extensions to include in concatenation"
         }
       }
     }
-  }
+  },
+  "scripts": {
+    "vscode:prepublish": "npm run compile",
+    "compile": "esbuild ./src/extension.ts --bundle --outfile=dist/extension.js --external:vscode --format=cjs --platform=node",
+    "watch": "npm run compile -- --watch",
+    "pretest": "npm run compile && npm run lint",
+    "lint": "eslint src --ext ts",
+    "test": "node ./out/test/runTest.js",
+    "package": "vsce package",
+    "publish": "vsce publish"
+  },
+  "devDependencies": {
+    "@types/glob": "^8.1.0",
+    "@types/mocha": "^10.0.1",
+    "@types/node": "^20.2.5",
+    "@types/vscode": "^1.60.0",
+    "@typescript-eslint/eslint-plugin": "^5.59.8",
+    "@typescript-eslint/parser": "^5.59.8",
+    "@vscode/test-electron": "^2.3.2",
+    "@vscode/vsce": "^2.19.0",
+    "esbuild": "^0.17.19",
+    "eslint": "^8.41.0",
+    "glob": "^8.1.0",
+    "mocha": "^10.2.0",
+    "typescript": "^5.1.3"
+  },
+  "dependencies": {}
 }
