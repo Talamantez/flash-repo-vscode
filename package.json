@@ -2,7 +2,7 @@
   "name": "flash-repo-vscode",
   "displayName": "Flash Repo",
   "description": "Quickly concatenate and analyze repository contents",
-  "version": "2.0.0",
+  "version": "2.0.2",
   "publisher": "conscious-robot",
   "private": true,
   "license": "MIT",

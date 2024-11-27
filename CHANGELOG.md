@@ -2,6 +2,9 @@
 
 All notable changes to Flash Repo will be documented in this file.
 
+## [2.0.2] - 2024-11-27
+- Updated tests
+
 ## [2.0.0] - 2024-11-27
 
 ### Added
@@ -28,17 +31,17 @@ All notable changes to Flash Repo will be documented in this file.
 - Enhanced error reporting
 - Improved memory management
 
-## [1.0.2] - 2024-03-19
+## [1.0.2] - 2024-11-19
 
 ### Added
 - Branded icon 
 
-## [1.0.1] - 2024-03-19
+## [1.0.1] - 2024-11-19
 
 ### Updated
 - Corrected "buy me a coffee" link in README.md 
 
-## [1.0.0] - 2024-03-19
+## [1.0.0] - 2024-11-19
 
 ### Added
 - Initial release 🎉
