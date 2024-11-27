@@ -25,7 +25,6 @@ export class EditorTimeoutError extends Error {
  */
 export async function createOutputDocument(
     content: string,
-    options: EditorRetryOptions = {}
 ): Promise<vscode.TextEditor> {
     const doc = await vscode.workspace.openTextDocument({
         content,
@@ -33,7 +32,6 @@ export async function createOutputDocument(
     });
 
     return await vscode.window.showTextDocument(doc, {
-        preview: false,
         viewColumn: vscode.ViewColumn.Beside
     });
 }
