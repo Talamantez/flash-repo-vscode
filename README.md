@@ -1,10 +1,3 @@
-# 🎉 Note for Early Adopters 🎉
-
-If you installed this extension before v2.0, please simply upgrade to continue using at no cost. Thank you for your support! The update will happen automatically through VSCode, or you can trigger it manually.
-
-_Not affected if you installed after v2.0._
-
----
 # Flash Repo Pro
 
 Flash Repo Pro is a powerful VS Code extension that quickly concatenates repository files into a single, well-formatted document. Perfect for code reviews, documentation, or preparing code for AI analysis.

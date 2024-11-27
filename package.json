@@ -27,12 +27,16 @@
   ],
   "main": "./dist/extension.js",
   "scripts": {
-    "vscode:prepublish": "npm run compile",
-    "compile": "tsc -p ./ && node ./esbuild.js --production",
-    "watch": "tsc -watch -p ./ & node ./esbuild.js --watch",
-    "lint": "eslint src --ext ts",
-    "pretest": "npm run compile && tsc -p ./",
-    "test": "node ./out/test/runTest.js"
+    "build": "tsc -p ./tsconfig.json && esbuild src/extension.ts --bundle --outfile=dist/extension.js --external:vscode --format=cjs --platform=node --minify",
+    "verify": "pnpm run build && pnpm run test",
+    "vscode:prepublish": "pnpm run verify",
+    "watch": "node esbuild.js --watch",
+    "package": "pnpm run verify && vsce package",
+    "publish": "pnpm run verify && vsce publish",
+    "pretest": "pnpm run build && pnpm run compile-tests",
+    "test": "xvfb-run --auto-servernum --server-args='-screen 0 1024x768x24' node --force-node-api-uncaught-exceptions-policy=true ./out/test/runTest.js",
+    "compile-tests": "tsc -p ./tsconfig.test.json",
+    "watch-tests": "tsc -p ./tsconfig.test.json --watch"
   },
   "devDependencies": {
     "@types/glob": "^8.1.0",
