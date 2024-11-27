@@ -33,7 +33,8 @@ Customize Flash Repo Snapshot Pro through VS Code settings:
         ".git",
         "node_modules",
         "dist",
-        "build"
+        "build",
+        "hydrated"
     ],
 
     // Specific files to exclude (e.g., lock files)

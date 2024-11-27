@@ -2,6 +2,7 @@
 .vscode-test/**
 .pnpm-store/**
 out/**
+hydrated/**
 node_modules/**
 src/**
 .gitignore

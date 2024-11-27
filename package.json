@@ -84,7 +84,8 @@
             ".git",
             "node_modules",
             "dist",
-            "build"
+            "build",
+            "hydrated"
           ],
           "description": "Directories to exclude from concatenation"
         },

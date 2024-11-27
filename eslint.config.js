@@ -9,6 +9,7 @@ export default [
         ignores: [
             'out/**',
             'dist/**',
+            'hydrated/**',
             'node_modules/**',
             '.vscode-test/**',
             'examples/**'
