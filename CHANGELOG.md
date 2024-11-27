@@ -2,10 +2,13 @@
 
 All notable changes to Flash Repo will be documented in this file.
 
+## [2.0.3] - 2024-11-27
+- Assign Icon in package.json
+
 ## [2.0.2] - 2024-11-27
 - Updated tests
 
-## [2.0.0] - 2024-11-27
+## [2.0.0] - 2024-11-26
 
 ### Added
 - 🌟 Upgraded to Flash Repo Pro!
