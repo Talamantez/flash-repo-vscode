@@ -3,7 +3,7 @@ import * as vscode from 'vscode';
 import { FlashRepoConfig } from './types';
 
 export const DEFAULT_CONFIG: FlashRepoConfig = {
-    excludedDirs: ['.git', 'node_modules', 'dist', 'build'],
+    excludedDirs: ['.git', 'node_modules', 'dist', 'build', 'hydrated'],
     excludedFiles: ['package-lock.json', 'yarn.lock'],
     includedExtensions: ['.md', '.ts', '.js', '.py', '.java', '.cpp', '.h', '.jsx', '.tsx']
 };

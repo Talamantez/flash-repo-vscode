@@ -1,12 +1,20 @@
 {
-    "extends": "./tsconfig.json",
-    "compilerOptions": {
-      "rootDir": ".",
-      "outDir": "out",
-      "types": ["mocha", "node"]
-    },
-    "include": [
-      "src/**/*",
-      "test/**/*"
-    ]
-  }
+  "extends": "./tsconfig.json",
+  "compilerOptions": {
+    "rootDir": ".",
+    "outDir": "out",
+    "noEmit": false
+  },
+  "include": [
+    "src/**/*",
+    "test/**/*"
+  ],
+  "exclude": [
+    "node_modules",
+    "examples",
+    "deno",
+    ".vscode-test",
+    "dist",
+    "out"
+  ]
+}
