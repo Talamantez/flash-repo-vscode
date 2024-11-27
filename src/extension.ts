@@ -5,6 +5,7 @@ import * as path from 'path';
 import { FlashRepoConfig, FileStats } from './types';
 import { getConfiguration } from './utils';
 import { LicenseService } from './services/license-service';
+import { registerHydrationCommand } from './hydration';
 
 export async function findFiles(rootPath: string, config: FlashRepoConfig): Promise<FileStats[]> {
     const files: FileStats[] = [];
@@ -202,6 +203,9 @@ export function activate(context: vscode.ExtensionContext): void {
     }, 60 * 60 * 1000);
 
     context.subscriptions.push(mainCommand);
+
+    // Register hydration command
+    registerHydrationCommand(context);
 }
 
 export function deactivate(): void {

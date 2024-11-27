@@ -2,6 +2,10 @@
 
 All notable changes to Flash Repo Snapshot Pro will be documented in this file.
 
+## [3.0.0] - 2024-11-27
+### Added
+- Flash Hydration
+
 ## [2.0.8] - 2024-11-27
 ### Added
 - Added markdown (.md) files to included files by default
