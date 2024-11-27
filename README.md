@@ -104,7 +104,7 @@ This is premium software available with a free trial. After the trial period, a 
 
 ## 🆕 Release Notes
 
-### 1.0.0
+### 2.0.0
 
 Initial release of Flash Repo Pro:
 - Professional file concatenation system

@@ -2,10 +2,19 @@
 
 All notable changes to Flash Repo will be documented in this file.
 
+## [2.0.4] - 2024-11-27
+### Updated
+- Update package.json with License, visibility info
+
+### Added
+- Trial logic and tests
+
 ## [2.0.3] - 2024-11-27
+### Added
 - Assign Icon in package.json
 
 ## [2.0.2] - 2024-11-27
+### Updated
 - Updated tests
 
 ## [2.0.0] - 2024-11-26
