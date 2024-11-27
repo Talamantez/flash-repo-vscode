@@ -3,7 +3,7 @@
   "displayName": "Flash Repo Snapshot Pro",
   "publisher": "conscious-robot",
   "description": "Quickly concatenate your repository files into a single document - perfect for AI analysis!",
-  "version": "2.0.8",
+  "version": "3.0.0",
   "pricing": "Trial",
   "engines": {
     "vscode": "^1.60.0"
@@ -28,7 +28,8 @@
   "activationEvents": [
     "onCommand:flash-repo.concatenate",
     "onCommand:flash-repo.showLicense",
-    "onCommand:flash-repo.purchase"
+    "onCommand:flash-repo.purchase",
+    "onCommand:flash-repo.hydrate"
   ],
   "main": "./dist/extension.js",
   "contributes": {
@@ -36,6 +37,10 @@
       {
         "command": "flash-repo.concatenate",
         "title": "Flash Repo: Concatenate Repository Files"
+      },
+      {
+        "command": "flash-repo.hydrate",
+        "title": "Flash Repo: Hydrate Snapshot"
       },
       {
         "command": "flash-repo.showLicense",
@@ -50,13 +55,23 @@
       "explorer/context": [
         {
           "command": "flash-repo.concatenate",
-          "group": "flash-repo"
+          "group": "0_flash-repo@1"
+        },
+        {
+          "command": "flash-repo.hydrate",
+          "when": "resourceScheme == 'file' && resourceExtname != ''",
+          "group": "0_flash-repo@2"
         }
       ],
       "editor/context": [
         {
           "command": "flash-repo.concatenate",
-          "group": "flash-repo"
+          "group": "0_flash-repo@1"
+        },
+        {
+          "when": "editorTextFocus",
+          "command": "flash-repo.hydrate",
+          "group": "0_flash-repo@2"
         }
       ]
     },
