@@ -2,6 +2,10 @@
 
 All notable changes to Flash Repo Snapshot Pro will be documented in this file.
 
+## [2.0.8] - 2024-11-27
+### Added
+- Added markdown (.md) files to included files by default
+
 ## [2.0.7] - 2024-11-27
 ### Fixed
 - Initialized trial service in extension file

@@ -44,6 +44,7 @@ Customize Flash Repo Snapshot Pro through VS Code settings:
 
     // File types to include
     "flash-repo.includedExtensions": [
+        ".md",
         ".ts",
         ".js",
         ".py",
