@@ -1,0 +1,105 @@
+{
+  "name": "flash-repo-vscode",
+  "displayName": "Flash Repo",
+  "description": "Quickly concatenate and analyze repository contents",
+  "version": "2.0.0",
+  "publisher": "conscious-robot",
+  "private": true,
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Talamantez/flash-repo-vscode"
+  },
+  "engines": {
+    "vscode": "^1.60.0"
+  },
+  "categories": [
+    "Other"
+  ],
+  "keywords": [
+    "repository",
+    "concatenate",
+    "files",
+    "analysis"
+  ],
+  "activationEvents": [
+    "onCommand:flash-repo.concatenate"
+  ],
+  "main": "./dist/extension.js",
+  "scripts": {
+    "vscode:prepublish": "npm run compile",
+    "compile": "tsc -p ./ && node ./esbuild.js --production",
+    "watch": "tsc -watch -p ./ & node ./esbuild.js --watch",
+    "lint": "eslint src --ext ts",
+    "pretest": "npm run compile && tsc -p ./",
+    "test": "node ./out/test/runTest.js"
+  },
+  "devDependencies": {
+    "@types/glob": "^8.1.0",
+    "@types/mocha": "^10.0.1",
+    "@types/node": "^18.15.11",
+    "@types/vscode": "^1.60.0",
+    "@typescript-eslint/eslint-plugin": "^5.59.0",
+    "@typescript-eslint/parser": "^5.59.0",
+    "@vscode/test-electron": "^2.3.0",
+    "esbuild": "^0.17.17",
+    "eslint": "^8.38.0",
+    "glob": "^10.2.2",
+    "mocha": "^10.2.0",
+    "typescript": "^5.0.4"
+  },
+  "contributes": {
+    "commands": [
+      {
+        "command": "flash-repo.concatenate",
+        "title": "Flash Repo: Concatenate Repository Files"
+      }
+    ],
+    "configuration": {
+      "title": "Flash Repo",
+      "properties": {
+        "flash-repo.excludedDirectories": {
+          "type": "array",
+          "default": [
+            ".git",
+            "node_modules",
+            "dist",
+            "build"
+          ],
+          "description": "Directories to exclude from concatenation",
+          "items": {
+            "type": "string"
+          }
+        },
+        "flash-repo.excludedFiles": {
+          "type": "array",
+          "default": [
+            "package-lock.json",
+            "yarn.lock"
+          ],
+          "description": "Files to exclude from concatenation",
+          "items": {
+            "type": "string"
+          }
+        },
+        "flash-repo.includedExtensions": {
+          "type": "array",
+          "default": [
+            ".ts",
+            ".js",
+            ".py",
+            ".java",
+            ".cpp",
+            ".h",
+            ".jsx",
+            ".tsx"
+          ],
+          "description": "File extensions to include in concatenation",
+          "items": {
+            "type": "string"
+          }
+        }
+      }
+    }
+  }
+}
