@@ -4,11 +4,16 @@
   "description": "Quickly concatenate and analyze repository contents",
   "version": "2.0.3",
   "publisher": "conscious-robot",
-  "private": true,
-  "license": "MIT",
+  "pricing": "Trial",
+  "private": false,
+  "license": "SEE LICENSE IN LICENSE.md",
   "repository": {
     "type": "git",
     "url": "https://github.com/Talamantez/flash-repo-vscode"
+  },
+  "galleryBanner": {
+    "color": "#2F3437",
+    "theme": "dark"
   },
   "engines": {
     "vscode": "^1.60.0"
