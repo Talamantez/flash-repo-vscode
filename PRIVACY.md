@@ -1,11 +1,11 @@
 # Privacy Policy
 
-## Claude AI Assistant Pro VSCode Extension
+## Flash Repo Snapshot Pro VSCode Extension
 
 **Effective Date:** November 24, 2024
 
 ### Overview
-Your privacy is important to us. This policy explains how Conscious Robot LLC ("we", "our", "us") collects and protects your information when using the Claude AI Assistant Pro VSCode Extension.
+Your privacy is important to us. This policy explains how Conscious Robot LLC ("we", "our", "us") collects and protects your information when using the Flash Repo Snapshot Pro VSCode Extension.
 
 ### Information We Collect
 

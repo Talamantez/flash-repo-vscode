@@ -1,9 +1,9 @@
 # End User License Agreement
-## Claude AI Assistant Pro VSCode Extension
+## Flash Repo Snapshot Pro VSCode Extension
 
 **Last Updated:** November 24, 2024
 
-This End User License Agreement ("Agreement") is between you and Conscious Robot LLC ("Company", "we", "us") for the Claude AI Assistant Pro VSCode Extension ("Software").
+This End User License Agreement ("Agreement") is between you and Conscious Robot LLC ("Company", "we", "us") for the Flash Repo Snapshot Pro VSCode Extension ("Software").
 
 ### 1. License Grant
 Subject to your payment and compliance with this Agreement, we grant you a non-exclusive, non-transferable license to use the Software.

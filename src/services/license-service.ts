@@ -85,7 +85,7 @@ export class LicenseService {
 
         if (!license) {
             vscode.window.showInformationMessage(
-                'Welcome to Claude AI Assistant Pro! Starting your 7-day free trial.'
+                'Welcome to Flash Repo Snapshot Pro! Starting your 7-day free trial.'
             );
             return;
         }
@@ -106,7 +106,7 @@ export class LicenseService {
                 });
             } else {
                 vscode.window.showWarningMessage(
-                    'Your trial has expired. Please purchase to continue using Claude AI Assistant Pro.',
+                    'Your trial has expired. Please purchase to continue using Flash Repo Snapshot Pro.',
                     'Purchase Now'
                 ).then(selection => {
                     if (selection === 'Purchase Now') {

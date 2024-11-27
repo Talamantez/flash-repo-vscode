@@ -25,7 +25,11 @@
   "bugs": {
     "url": "https://github.com/talamantez/flash-repo-vscode/issues"
   },
-  "activationEvents": [],
+  "activationEvents": [
+    "onCommand:flash-repo.concatenate",
+    "onCommand:flash-repo.showLicense",
+    "onCommand:flash-repo.purchase"
+  ],
   "main": "./dist/extension.js",
   "contributes": {
     "commands": [
@@ -42,6 +46,20 @@
         "title": "Flash Repo: Purchase License"
       }
     ],
+    "menus": {
+      "explorer/context": [
+        {
+          "command": "flash-repo.concatenate",
+          "group": "flash-repo"
+        }
+      ],
+      "editor/context": [
+        {
+          "command": "flash-repo.concatenate",
+          "group": "flash-repo"
+        }
+      ]
+    },
     "configuration": {
       "title": "Flash Repo",
       "properties": {
@@ -66,6 +84,7 @@
         "flash-repo.includedExtensions": {
           "type": "array",
           "default": [
+            ".md",
             ".ts",
             ".js",
             ".py",

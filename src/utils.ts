@@ -5,7 +5,7 @@ import { FlashRepoConfig } from './types';
 export const DEFAULT_CONFIG: FlashRepoConfig = {
     excludedDirs: ['.git', 'node_modules', 'dist', 'build'],
     excludedFiles: ['package-lock.json', 'yarn.lock'],
-    includedExtensions: ['.ts', '.js', '.py', '.java', '.cpp', '.h', '.jsx', '.tsx']
+    includedExtensions: ['.md', '.ts', '.js', '.py', '.java', '.cpp', '.h', '.jsx', '.tsx']
 };
 
 /**
