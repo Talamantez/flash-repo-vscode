@@ -20,7 +20,15 @@
     "repository",
     "concatenate",
     "files",
-    "analysis"
+    "analysis",
+    "claude",
+    "ai",
+    "assistant",
+    "anthropic",
+    "code",
+    "documentation",
+    "productivity",
+    "claudeai"
   ],
   "activationEvents": [
     "onCommand:flash-repo.concatenate"
