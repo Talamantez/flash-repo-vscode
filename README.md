@@ -1,6 +1,6 @@
-# Flash Repo Pro
+# Flash Repo Snapshot Pro
 
-Flash Repo Pro is a powerful VS Code extension that quickly concatenates repository files into a single, well-formatted document. Perfect for code reviews, documentation, or preparing code for AI analysis.
+Flash Repo Snapshot Pro is a powerful VS Code extension that quickly concatenates repository files into a single, well-formatted document. Perfect for code reviews, documentation, or preparing code for AI analysis.
 
 ## 🚀 Pro Features
 
@@ -13,18 +13,18 @@ Flash Repo Pro is a powerful VS Code extension that quickly concatenates reposit
 
 ## 🎯 Start Your Free Trial
 
-Flash Repo Pro comes with a 7-day free trial. After the trial period, you'll need to purchase a license to continue using the extension.
+Flash Repo Snapshot Pro comes with a 7-day free trial. After the trial period, you'll need to purchase a license to continue using the extension.
 
 ## 📝 Usage
 
 1. Open a workspace in VS Code
 2. Press `Ctrl+Shift+P` (Windows/Linux) or `Cmd+Shift+P` (Mac)
-3. Type "Flash Repo Pro: Concatenate Repository Files" and press Enter
+3. Type "Flash Repo Snapshot Pro: Concatenate Repository Files" and press Enter
 4. View the generated output in a new editor tab
 
 ## ⚙️ Configuration
 
-Customize Flash Repo Pro through VS Code settings:
+Customize Flash Repo Snapshot Pro through VS Code settings:
 
 ```jsonc
 {
@@ -106,7 +106,7 @@ This is premium software available with a free trial. After the trial period, a 
 
 ### 2.0.0
 
-Initial release of Flash Repo Pro:
+Initial release of Flash Repo Snapshot Pro:
 - Professional file concatenation system
 - Configurable inclusion/exclusion patterns
 - Large file warnings
@@ -120,4 +120,4 @@ Having issues or need help? Contact us through:
 - [GitHub Issues](https://github.com/talamantez/flash-repo-vscode/issues)
 
 
-**Try Flash Repo Pro today and supercharge your code review workflow!** 🚀
+**Try Flash Repo Snapshot Pro today and supercharge your code review workflow!** 🚀

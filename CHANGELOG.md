@@ -1,10 +1,11 @@
 # Change Log
 
-All notable changes to Flash Repo will be documented in this file.
+All notable changes to Flash Repo Snapshot Pro will be documented in this file.
 
 ## [2.0.6] - 2024-11-27
 ### Fixed
 - Initialized trial service in extension file
+- Corrected naming across repo
 
 ## [2.0.4] - 2024-11-27
 ### Updated
@@ -24,7 +25,7 @@ All notable changes to Flash Repo will be documented in this file.
 ## [2.0.0] - 2024-11-26
 
 ### Added
-- 🌟 Upgraded to Flash Repo Pro!
+- 🌟 Upgraded to Flash Repo Snapshot Pro!
 - Professional licensing system
 - 7-day free trial for new users
 - Enhanced performance and reliability

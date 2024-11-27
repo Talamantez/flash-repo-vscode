@@ -26,11 +26,9 @@ SOFTWARE.
 
 While the source code is MIT licensed, this VS Code extension is distributed as a paid product through the Visual Studio Code Marketplace. The following terms apply to the marketplace distribution:
 
-1. Early adopters who installed the extension before 11/23/2024 retain free access
-2. New users must purchase a license through the VS Code Marketplace
-3. Each purchase is for a single user
-4. Users must maintain their own Claude API key from Anthropic
-5. No warranty or guarantee of service is provided
-6. Support is provided through GitHub issues
+1. New users must purchase a license through the VS Code Marketplace
+2. Each purchase is for a single user
+3. No warranty or guarantee of service is provided
+4. Support is provided through GitHub issues
 
-For questions or support, please visit: https://github.com/talamantez/claude-vscode/issues
+For questions or support, please visit: https://github.com/talamantez/flash-repo-vscode/issues

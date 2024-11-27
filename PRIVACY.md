@@ -11,37 +11,31 @@ Your privacy is important to us. This policy explains how Conscious Robot LLC ("
 
 #### Essential Information
 - VSCode Marketplace account details (for license validation)
-- Claude API keys (stored locally and encrypted)
 - Basic usage statistics for diagnostics
 
 #### Local Storage Only
 - Configuration settings
-- API keys (stored securely in VSCode's built-in secure storage)
 - License status
 
 #### We Do Not Collect
-- Your code or queries to Claude
 - Personal identification information
 - Project or workspace information
 - Usage patterns or analytics
 
 ### Data Storage and Security
 - All sensitive data is stored locally on your machine
-- API keys are encrypted using VSCode's secure storage
 - No cloud storage or transmission of your data
 - No telemetry or usage tracking
 
 ### Third-Party Services
 We integrate with:
 - Visual Studio Marketplace (for license management)
-- Anthropic's Claude API (using your provided API key)
 - GitHub (optional, for issue tracking)
 
 ### Your Controls
 You can:
 - Delete all local data by uninstalling the extension
 - Reset your license information
-- Manage your own API keys
 - Opt out of error reporting
 
 ### Updates & Communication
@@ -50,7 +44,7 @@ You can:
 - No marketing emails or promotions
 
 ### Contact
-- GitHub Issues: https://github.com/talamantez/claude-vscode
+- GitHub Issues: https://github.com/talamantez/flash-repo-vscode
 - Email: info@consciousrobot.com
 - Website: https://consciousrobot.com
 

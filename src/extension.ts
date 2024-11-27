@@ -88,15 +88,15 @@ export function activate(context: vscode.ExtensionContext): void {
             const daysLeft = Math.max(0, Math.ceil((license.trialEndsAt.getTime() - Date.now()) / (1000 * 60 * 60 * 24)));
             if (daysLeft > 0) {
                 statusBar.text = `$(clock) Flash Repo: ${daysLeft}d trial left`;
-                statusBar.tooltip = 'Click to purchase Flash Repo Pro';
+                statusBar.tooltip = 'Click to purchase Flash Repo Snapshot Pro';
                 statusBar.show();
             } else {
                 statusBar.text = '$(alert) Flash Repo: Trial expired';
-                statusBar.tooltip = 'Click to purchase Flash Repo Pro';
+                statusBar.tooltip = 'Click to purchase Flash Repo Snapshot Pro';
                 statusBar.show();
             }
         } else if (!license.isTrial && license.isValid) {
-            statusBar.text = '$(verified) Flash Repo Pro';
+            statusBar.text = '$(verified) Flash Repo Snapshot Pro';
             statusBar.tooltip = 'Licensed version';
             statusBar.show();
         }
@@ -127,7 +127,7 @@ export function activate(context: vscode.ExtensionContext): void {
                     await licenseService.showLicenseStatus();
                 } else {
                     void vscode.window.showErrorMessage(
-                        'Flash Repo Pro license required. Purchase now for just $9.99!',
+                        'Flash Repo Snapshot Pro license required. Purchase now for just $9.99!',
                         'Purchase Now'
                     ).then(selection => {
                         if (selection === 'Purchase Now') {

@@ -34,7 +34,6 @@ You may not:
 
 ### 5. Data and Privacy
 - We don't collect your code or queries
-- API keys stored locally and encrypted
 - No cloud storage of your data
 - See PRIVACY.md for full details
 
@@ -60,6 +59,6 @@ BY INSTALLING OR USING THE SOFTWARE, YOU AGREE TO BE BOUND BY THE TERMS OF THIS 
 ### Contact
 - Website: https://consciousrobot.com
 - Support: info@consciousrobot.com
-- GitHub: https://github.com/Talamantez/claude-vscode
+- GitHub: https://github.com/Talamantez/flash-repo-vscode
 
 © 2024 Conscious Robot LLC. All rights reserved.
