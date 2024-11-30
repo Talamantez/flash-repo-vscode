@@ -113,16 +113,8 @@ async function performHydration(): Promise<void> {
             // Show success message with folder path
             const relativePath = path.relative(workspacePath, hydratedPath);
             void vscode.window.showInformationMessage(
-                `Files hydrated to: ${relativePath}`,
-                'Open Folder'
-            ).then(selection => {
-                if (selection === 'Open Folder') {
-                    void vscode.commands.executeCommand(
-                        'revealFileInOS',
-                        vscode.Uri.file(hydratedPath)
-                    );
-                }
-            });
+                'Files were hydrated successfully to folder: ' + relativePath
+            );
         });
     } catch (error) {
         console.error('Hydration error:', error);
