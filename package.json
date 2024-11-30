@@ -3,7 +3,7 @@
   "displayName": "Flash Repo Snapshot Pro",
   "publisher": "conscious-robot",
   "description": "Quickly concatenate your repository files into a single document - perfect for AI analysis!",
-  "version": "3.0.0",
+  "version": "3.1.0",
   "pricing": "Trial",
   "engines": {
     "vscode": "^1.60.0"
@@ -27,9 +27,8 @@
   },
   "activationEvents": [
     "onCommand:flash-repo.concatenate",
-    "onCommand:flash-repo.showLicense",
-    "onCommand:flash-repo.purchase",
-    "onCommand:flash-repo.hydrate"
+    "onCommand:flash-repo.hydrate",
+    "onCommand:flash-repo.hydrateClaudeResponse"
   ],
   "main": "./dist/extension.js",
   "contributes": {
@@ -43,12 +42,8 @@
         "title": "Flash Repo: Hydrate Snapshot"
       },
       {
-        "command": "flash-repo.showLicense",
-        "title": "Flash Repo: Show License Status"
-      },
-      {
-        "command": "flash-repo.purchase",
-        "title": "Flash Repo: Purchase License"
+        "command": "flash-repo.hydrateClaudeResponse",
+        "title": "Flash Repo: Hydrate Claude Response"
       }
     ],
     "menus": {
@@ -56,11 +51,6 @@
         {
           "command": "flash-repo.concatenate",
           "group": "0_flash-repo@1"
-        },
-        {
-          "command": "flash-repo.hydrate",
-          "when": "resourceScheme == 'file' && resourceExtname != ''",
-          "group": "0_flash-repo@2"
         }
       ],
       "editor/context": [
@@ -70,8 +60,13 @@
         },
         {
           "when": "editorTextFocus",
-          "command": "flash-repo.hydrate",
+          "command": "flash-repo.hydrateClaudeResponse",
           "group": "0_flash-repo@2"
+        },
+        {
+          "when": "editorTextFocus",
+          "command": "flash-repo.hydrate",
+          "group": "0_flash-repo@3"
         }
       ]
     },

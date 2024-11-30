@@ -1,14 +1,16 @@
 // src/hydration.ts
 import * as vscode from 'vscode';
-import * as fs from 'fs';
 import * as path from 'path';
-import { LicenseService } from './services/license-service';
-
+import * as fs from 'fs';
+import { getExtensionForLanguage, hydrateClaudeResponse } from './claude-hydration';
 interface FileEntry {
     path: string;
     content: string;
 }
 
+/**
+ * Parses output from Flash Repo concatenation
+ */
 export function parseFlashRepoOutput(content: string): FileEntry[] {
     const files: FileEntry[] = [];
     const lines = content.split('\n');
@@ -31,13 +33,17 @@ export function parseFlashRepoOutput(content: string): FileEntry[] {
             const filePath = line.replace('=== File: ', '').replace(' ===', '').trim();
             currentFile = { path: filePath, content: '' };
             isInFile = true;
+            continue;
         }
+
         // Start of content marker
-        else if (line.startsWith('=== Begin Concatenated Content ===')) {
+        if (line === '=== Begin Concatenated Content ===') {
             isInFile = false;
+            continue;
         }
-        // File content - only add if we're in a file section
-        else if (currentFile && isInFile) {
+
+        // Collect content if we're in a file section
+        if (currentFile && isInFile) {
             contentLines.push(line);
         }
     }
@@ -51,6 +57,104 @@ export function parseFlashRepoOutput(content: string): FileEntry[] {
     return files;
 }
 
+/**
+ * Parses code blocks and file contents from Claude's response
+ */
+export function parseClaudeResponse(content: string): FileEntry[] {
+    const files: FileEntry[] = [];
+    const lines = content.split('\n');
+
+    let currentFile: FileEntry | null = null;
+    let inCodeBlock = false;
+    let codeBlockLang = '';
+    let contentLines: string[] = [];
+    let inResponse = false;
+    let inArtifact = false;
+    for (let i = 0; i < lines.length; i++) {
+        const line = lines[i];
+        // Mark when we enter the response section
+        if (line.trim() === '## Response') {
+            inResponse = true;
+            continue;
+        }
+        // Only process content once we're in the response section
+        if (!inResponse) {
+            continue;
+        }
+
+        // Look for code blocks
+        if (line.trim().startsWith('```')) {
+            if (!inCodeBlock) {
+                // Start of code block
+                inCodeBlock = true;
+                codeBlockLang = line.trim().slice(3) || '';
+                // Look ahead for filename comment
+                const nextLine = lines[i + 1] || '';
+                const filenameComment = nextLine.match(/\/\/ ([^\s]+)$/);
+                if (filenameComment) {
+                    currentFile = { path: filenameComment[1], content: '' };
+                    i++; // Skip filename line
+                } else {
+                    // Generate filename based on language
+                    const ext = getExtensionForLanguage(codeBlockLang);
+                    currentFile = {
+                        path: `generated/code-block-${files.length + 1}${ext}`,
+                        content: ''
+                    };
+                }
+                continue;
+            } else {
+                // End of code block
+                inCodeBlock = false;
+                if (currentFile && contentLines.length > 0) {
+                    currentFile.content = contentLines.join('\n');
+                    files.push(currentFile);
+                    currentFile = null;
+                    contentLines = [];
+                }
+                continue;
+            }
+        }
+
+        // Look for artifact blocks
+        if (line.includes('<function_calls>')) {
+            inArtifact = true;
+            currentFile = {
+                path: `generated/artifact-${files.length + 1}.ts`,
+                content: ''
+            };
+            continue;
+        }
+
+        if (line.includes('<parameter name="content">')) {
+            if (inArtifact) {
+                const artifactId = files.length + 1;
+                currentFile = {
+                    path: `generated/artifact-${artifactId}.ts`,
+                    content: ''
+                };
+                continue;
+            }
+        }
+
+        // Collect content if we're in a code block or artifact
+        if (currentFile && (inCodeBlock || inArtifact)) {
+            contentLines.push(line);
+        }
+    }
+
+    // Add final file if exists
+    if (currentFile && contentLines.length > 0) {
+        currentFile.content = contentLines.join('\n');
+        files.push(currentFile);
+    }
+
+    return files;
+}
+
+/**
+ * Creates hydrated files from the parsed content
+ */
 export async function hydrateFiles(files: FileEntry[], workspacePath: string): Promise<string> {
     const timestamp = new Date().toISOString().replace(/[:.]/g, '-');
     const hydratedDir = path.join(workspacePath, 'hydrated', `snapshot-${timestamp}`);
@@ -73,19 +177,17 @@ export async function hydrateFiles(files: FileEntry[], workspacePath: string): P
     return hydratedDir;
 }
 
+/**
+ * Performs hydration of Flash Repo output
+ */
 async function performHydration(): Promise<void> {
     try {
-        console.log('Starting hydration...');
-        void vscode.window.showInformationMessage('Starting hydration process...');
         const editor = vscode.window.activeTextEditor;
-        console.log('Active editor:', editor ? 'found' : 'not found');
         if (!editor) {
             throw new Error('No active text editor');
         }
 
         const text = editor.document.getText();
-        console.log('Document content length:', text.length);
-        console.log('Is Flash Repo snapshot:', text.includes('=== Flash Repo Summary ==='));
         if (!text.includes('=== Flash Repo Summary ===')) {
             throw new Error('Not a Flash Repo snapshot');
         }
@@ -103,7 +205,6 @@ async function performHydration(): Promise<void> {
         }, async () => {
             // Parse and hydrate files
             const files = parseFlashRepoOutput(text);
-            console.log('Parsed files count:', files.length);
             if (files.length === 0) {
                 throw new Error('No files found to hydrate');
             }
@@ -123,17 +224,54 @@ async function performHydration(): Promise<void> {
     }
 }
 
-export function registerHydrationCommand(context: vscode.ExtensionContext): void {
-    // Register main hydration command
+/**
+ * Register both Flash Repo and Claude hydration commands
+ */
+export function registerHydrationCommands(context: vscode.ExtensionContext): void {
+    // Register hydration command for Flash Repo output
     const hydrationCommand = vscode.commands.registerCommand('flash-repo.hydrate', async () => {
         await performHydration();
     });
 
-    // Register context menu command - simplified to use main command
+    // Register hydration command for Claude responses
+    const claudeHydrationCommand = vscode.commands.registerCommand('flash-repo.hydrateClaudeResponse', async () => {
+        try {
+            const editor = vscode.window.activeTextEditor;
+            if (!editor) {
+                throw new Error('No active text editor');
+            }
+
+            const workspacePath = vscode.workspace.workspaceFolders?.[0].uri.fsPath;
+            if (!workspacePath) {
+                throw new Error('No workspace folder open');
+            }
+
+            const text = editor.document.getText();
+
+            // Show progress indicator
+            await vscode.window.withProgress({
+                location: vscode.ProgressLocation.Notification,
+                title: "Hydrating Claude response...",
+                cancellable: false
+            }, async () => {
+                const hydratedPath = await hydrateClaudeResponse(text, workspacePath);
+                const relativePath = path.relative(workspacePath, hydratedPath);
+
+                void vscode.window.showInformationMessage(
+                    `Claude response hydrated successfully to folder: ${relativePath}`
+                );
+            });
+        } catch (error) {
+            console.error('Claude hydration error:', error);
+            const message = error instanceof Error ? error.message : 'Unknown error';
+            void vscode.window.showErrorMessage(`Claude hydration failed: ${message}`);
+        }
+    });
+
+    // Register context menu command
     const contextMenuCommand = vscode.commands.registerCommand('flash-repo.hydrateContextMenu', async () => {
-        // Just execute the main hydrate command
         await vscode.commands.executeCommand('flash-repo.hydrate');
     });
 
-    context.subscriptions.push(hydrationCommand, contextMenuCommand);
+    context.subscriptions.push(hydrationCommand, claudeHydrationCommand, contextMenuCommand);
 }
