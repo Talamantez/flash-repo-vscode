@@ -53,17 +53,21 @@ export function generateSummary(files: FileStats[]): string {
     const totalFiles = files.length;
 
     const summary = [
-        '=== Flash Repo Summary ===',
-        `Total Files: ${totalFiles}`,
-        `Total Characters: ${totalChars.toLocaleString()} (${Math.round(totalChars / 1000)}K)`,
-        '',
-        'Files included:',
-        ...files.map(f => `- ${f.path} (${f.characters.toLocaleString()} chars)`),
-        '',
-        '=== Begin Concatenated Content ==='
+        `Total Files:${totalFiles}`,
+        `Total Characters:${totalChars.toLocaleString()} (${Math.round(totalChars / 1000)}K)`,
+        ...files.map(f => `$${f.path}|${f.characters}`)
     ];
 
     return summary.join('\n');
+}
+
+export async function generateContent(summary: string, files: FileStats[]): Promise<string> {
+    const fileContents = await Promise.all(files.map(async file => {
+        const content = await fs.promises.readFile(file.path, 'utf8');
+        return `#${file.path}\n${content.trim()}`;
+    }));
+
+    return [summary, ...fileContents].join('\n');
 }
 
 export function activate(context: vscode.ExtensionContext): void {
@@ -165,13 +169,7 @@ export function activate(context: vscode.ExtensionContext): void {
                 }
 
                 const summary = generateSummary(files);
-                const content = [
-                    summary,
-                    ...(await Promise.all(files.map(async file => {
-                        const content = await fs.promises.readFile(file.path, 'utf8');
-                        return `=== File: ${file.path} ===\n\n${content}\n`;
-                    })))
-                ].join('\n');
+                const content = await generateContent(summary, files);
 
                 const doc = await vscode.workspace.openTextDocument({
                     content,

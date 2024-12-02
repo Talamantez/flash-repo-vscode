@@ -1,26 +1,27 @@
 {
-    "compilerOptions": {
-      "module": "commonjs",
-      "target": "ES2020",
-      "outDir": "dist",
-      "rootDir": "src",
-      "sourceMap": true,
-      "strict": true,
-      "noImplicitAny": true,
-      "esModuleInterop": true,
-      "skipLibCheck": true,
-      "resolveJsonModule": true,
-      "lib": ["ES2020"],
-      "baseUrl": "."
-    },
-    "include": [
-      "src/**/*"
+  "compilerOptions": {
+    "module": "commonjs",
+    "target": "es2020",
+    "lib": [
+      "es2020"
     ],
-    "exclude": [
-      "node_modules",
-      "examples",
-      "deno",
-      ".vscode-test",
-      "dist"
-    ]
-  }
+    "outDir": "out",
+    "sourceMap": true,
+    "strict": true,
+    "rootDir": ".",
+    "noImplicitReturns": true,
+    "noFallthroughCasesInSwitch": true,
+    "noUnusedParameters": true,
+    "esModuleInterop": true
+  },
+  "include": [
+    "test/**/*"
+  ],
+  "exclude": [
+    "node_modules",
+    "examples",
+    "deno",
+    ".vscode-test",
+    "dist"
+  ]
+}
