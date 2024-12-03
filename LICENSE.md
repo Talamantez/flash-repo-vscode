@@ -22,13 +22,4 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 
-## Marketplace Distribution
-
-While the source code is MIT licensed, this VS Code extension is distributed as a paid product through the Visual Studio Code Marketplace. The following terms apply to the marketplace distribution:
-
-1. New users must purchase a license through the VS Code Marketplace
-2. Each purchase is for a single user
-3. No warranty or guarantee of service is provided
-4. Support is provided through GitHub issues
-
 For questions or support, please visit: https://github.com/talamantez/flash-repo-vscode/issues

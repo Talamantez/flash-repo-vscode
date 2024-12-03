@@ -4,7 +4,6 @@ import * as fs from 'fs';
 import * as path from 'path';
 import { FlashRepoConfig, FileStats } from './types';
 import { getConfiguration } from './utils';
-import { LicenseService } from './services/license-service';
 import { registerHydrationCommand } from './hydration';
 
 export async function findFiles(rootPath: string, config: FlashRepoConfig): Promise<FileStats[]> {
@@ -53,92 +52,27 @@ export function generateSummary(files: FileStats[]): string {
     const totalFiles = files.length;
 
     const summary = [
-        '=== Flash Repo Summary ===',
-        `Total Files: ${totalFiles}`,
-        `Total Characters: ${totalChars.toLocaleString()} (${Math.round(totalChars / 1000)}K)`,
-        '',
-        'Files included:',
-        ...files.map(f => `- ${f.path} (${f.characters.toLocaleString()} chars)`),
-        '',
-        '=== Begin Concatenated Content ==='
+        `Total Files:${totalFiles}`,
+        `Total Characters:${totalChars.toLocaleString()} (${Math.round(totalChars / 1000)}K)`,
+        ...files.map(f => `$${f.path}|${f.characters}`)
     ];
 
     return summary.join('\n');
 }
 
+export async function generateContent(summary: string, files: FileStats[]): Promise<string> {
+    const fileContents = await Promise.all(files.map(async file => {
+        const content = await fs.promises.readFile(file.path, 'utf8');
+        return `#${file.path}\n${content.trim()}`;
+    }));
+
+    return [summary, ...fileContents].join('\n');
+}
+
 export function activate(context: vscode.ExtensionContext): void {
-    // Initialize license service
-    const licenseService = new LicenseService(context);
-    void licenseService.initializeLicense();
-    void licenseService.showLicenseStatus();
-
-    // Create status bar for license status
-    const statusBar = vscode.window.createStatusBarItem(vscode.StatusBarAlignment.Right, 100);
-    statusBar.command = 'flash-repo.showLicense';
-    context.subscriptions.push(statusBar);
-
-    // Update license status bar
-    async function updateLicenseStatus(): Promise<void> {
-        const license = await licenseService.getLicenseInfo();
-        if (!license) {
-            statusBar.hide();
-            return;
-        }
-
-        if (license.isTrial && license.trialEndsAt) {
-            const daysLeft = Math.max(0, Math.ceil((license.trialEndsAt.getTime() - Date.now()) / (1000 * 60 * 60 * 24)));
-            if (daysLeft > 0) {
-                statusBar.text = `$(clock) Flash Repo: ${daysLeft}d trial left`;
-                statusBar.tooltip = 'Click to purchase Flash Repo Snapshot Pro';
-                statusBar.show();
-            } else {
-                statusBar.text = '$(alert) Flash Repo: Trial expired';
-                statusBar.tooltip = 'Click to purchase Flash Repo Snapshot Pro';
-                statusBar.show();
-            }
-        } else if (!license.isTrial && license.isValid) {
-            statusBar.text = '$(verified) Flash Repo Snapshot Pro';
-            statusBar.tooltip = 'Licensed version';
-            statusBar.show();
-        }
-    }
-
-    // Register license status command
-    const licenseStatusCommand = vscode.commands.registerCommand('flash-repo.showLicense', async () => {
-        await licenseService.showLicenseStatus();
-    });
-    context.subscriptions.push(licenseStatusCommand);
-
-    // Register purchase command
-    const purchaseCommand = vscode.commands.registerCommand('flash-repo.purchase', () => {
-        void vscode.env.openExternal(
-            vscode.Uri.parse('https://marketplace.visualstudio.com/items?itemName=conscious-robot.flash-repo-vscode')
-        );
-    });
-    context.subscriptions.push(purchaseCommand);
-
-    // Main command registration
+    // Register the main command
     const mainCommand = vscode.commands.registerCommand('flash-repo.concatenate', async () => {
         try {
-            // Check license status before executing command
-            const isValid = await licenseService.validateLicense();
-            if (!isValid) {
-                const license = await licenseService.getLicenseInfo();
-                if (license?.isTrial) {
-                    await licenseService.showLicenseStatus();
-                } else {
-                    void vscode.window.showErrorMessage(
-                        'Flash Repo Snapshot Pro license required. Purchase now for just $9.99!',
-                        'Purchase Now'
-                    ).then(selection => {
-                        if (selection === 'Purchase Now') {
-                            void vscode.commands.executeCommand('flash-repo.purchase');
-                        }
-                    });
-                }
-                return;
-            }
-
             const workspaceFolders = vscode.workspace.workspaceFolders;
             if (!workspaceFolders) {
                 throw new Error('No workspace folder open');
@@ -165,13 +99,7 @@ export function activate(context: vscode.ExtensionContext): void {
                 }
 
                 const summary = generateSummary(files);
-                const content = [
-                    summary,
-                    ...(await Promise.all(files.map(async file => {
-                        const content = await fs.promises.readFile(file.path, 'utf8');
-                        return `=== File: ${file.path} ===\n\n${content}\n`;
-                    })))
-                ].join('\n');
+                const content = await generateContent(summary, files);
 
                 const doc = await vscode.workspace.openTextDocument({
                     content,
@@ -193,14 +121,6 @@ export function activate(context: vscode.ExtensionContext): void {
             void vscode.window.showErrorMessage(`Flash Repo Error: ${message}`);
         }
     });
-
-    // Initial status update
-    void updateLicenseStatus();
-
-    // Update status every hour
-    setInterval(() => {
-        void updateLicenseStatus();
-    }, 60 * 60 * 1000);
 
     context.subscriptions.push(mainCommand);
 

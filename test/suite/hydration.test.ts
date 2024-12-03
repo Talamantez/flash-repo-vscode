@@ -1,6 +1,5 @@
 // test/suite/hydration.test.ts
 import * as assert from 'assert';
-import * as vscode from 'vscode';
 import * as fs from 'fs';
 import * as path from 'path';
 import { parseFlashRepoOutput, hydrateFiles } from '../../src/hydration';
@@ -10,36 +9,27 @@ suite('Hydration Feature Tests', () => {
     let hydratedDir: string;
 
     setup(async () => {
-        // Create fresh test directories
         testDir = path.join(__dirname, 'test-files');
         hydratedDir = path.join(testDir, 'hydrated');
         await fs.promises.mkdir(testDir, { recursive: true });
     });
 
     teardown(async () => {
-        // Clean up test directories
         if (fs.existsSync(testDir)) {
             await fs.promises.rm(testDir, { recursive: true, force: true });
         }
     });
 
     suite('Parser Tests', () => {
-        test('parses valid Flash Repo output correctly', () => {
-            const input = `=== Flash Repo Summary ===
-Total Files: 2
-Total Characters: 50
-
-Files included:
-- /src/test.ts (25 chars)
-- /src/main.ts (25 chars)
-
-=== Begin Concatenated Content ===
-=== File: /src/test.ts ===
+        test('parses flash repo format correctly', () => {
+            const input = `Total Files:2
+Total Characters:50 (1K)
+$/src/test.ts|25
+$/src/main.ts|25
+#/src/test.ts
 console.log('test file');
-
-=== File: /src/main.ts ===
-console.log('main file');
-`;
+#/src/main.ts
+console.log('main file');`;
 
             const files = parseFlashRepoOutput(input);
             assert.strictEqual(files.length, 2, 'Should find two files');
@@ -49,120 +39,105 @@ console.log('main file');
             assert.strictEqual(files[1].content.trim(), "console.log('main file');");
         });
 
-        test('handles empty input gracefully', () => {
-            const files = parseFlashRepoOutput('');
-            assert.strictEqual(files.length, 0);
-        });
-
-        test('ignores non-file content', () => {
-            const input = `Some random text
-that should be ignored
-=== File: /src/test.ts ===
-actual content`;
+        test('handles markdown content correctly', () => {
+            const input = `Total Files:1
+Total Characters:50 (1K)
+$/src/README.md|50
+#/src/README.md
+# Header 1
+## Header 2
+### Header 3
+Normal text
+# Another Header`;
 
             const files = parseFlashRepoOutput(input);
-            assert.strictEqual(files.length, 1);
-            assert.strictEqual(files[0].path, '/src/test.ts');
-            assert.strictEqual(files[0].content.trim(), 'actual content');
+            assert.strictEqual(files.length, 1, 'Should treat markdown as single file');
+            assert.strictEqual(files[0].path, '/src/README.md', 'Should have correct path');
+            assert.ok(files[0].content.includes('# Header 1'), 'Should preserve headers');
+            assert.ok(files[0].content.includes('Normal text'), 'Should preserve normal text');
+        });
+
+        test('handles empty input', () => {
+            const files = parseFlashRepoOutput('');
+            assert.strictEqual(files.length, 0, 'Should return empty array for empty input');
+        });
+
+        test('preserves file content formatting', () => {
+            const input = `Total Files:1
+Total Characters:35 (1K)
+$/src/test.ts|35
+#/src/test.ts
+line1
+line2
+line3`;
+
+            const files = parseFlashRepoOutput(input);
+            assert.strictEqual(files.length, 1, 'Should find one file');
+            assert.strictEqual(files[0].content.split('\n').length, 3, 'Should preserve line breaks');
+            assert.ok(files[0].content.includes('line1\nline2\nline3'), 'Should preserve content order');
         });
     });
 
-    suite('Hydration Tests', () => {
-        test('creates files with correct content and structure', async () => {
-            const testFiles = [
-                {
-                    path: '/src/test.ts',
-                    content: 'console.log("test");'
-                },
-                {
-                    path: '/src/utils/helper.ts',
-                    content: 'export const help = () => {};'
-                }
-            ];
-
-            const hydratedPath = await hydrateFiles(testFiles, testDir);
-
-            // Check directory was created
-            assert.ok(fs.existsSync(hydratedPath), 'Hydrated directory should exist');
-
-            // Check files were created with correct content
-            const testFilePath = path.join(hydratedPath, 'src', 'test.ts');
-            const helperFilePath = path.join(hydratedPath, 'src', 'utils', 'helper.ts');
-
-            assert.ok(fs.existsSync(testFilePath), 'Test file should exist');
-            assert.ok(fs.existsSync(helperFilePath), 'Helper file should exist');
-
-            const testContent = await fs.promises.readFile(testFilePath, 'utf8');
-            const helperContent = await fs.promises.readFile(helperFilePath, 'utf8');
-
-            assert.strictEqual(testContent, testFiles[0].content);
-            assert.strictEqual(helperContent, testFiles[1].content);
-        });
-
-        test('handles special characters in paths', async () => {
-            const testFiles = [
-                {
-                    path: '/src/test file.ts',
-                    content: 'test content'
-                },
-                {
-                    path: '/src/@special/helper.ts',
-                    content: 'helper content'
-                }
-            ];
-
-            const hydratedPath = await hydrateFiles(testFiles, testDir);
-
-            const testFilePath = path.join(hydratedPath, 'src', 'test file.ts');
-            const helperFilePath = path.join(hydratedPath, 'src', '@special', 'helper.ts');
-
-            assert.ok(fs.existsSync(testFilePath), 'File with space should exist');
-            assert.ok(fs.existsSync(helperFilePath), 'File with special chars should exist');
-        });
-
-        test('handles empty file list gracefully', async () => {
-            const hydratedPath = await hydrateFiles([], testDir);
-            assert.ok(fs.existsSync(hydratedPath), 'Should create hydrated directory even with no files');
-            const files = await fs.promises.readdir(hydratedPath);
-            assert.strictEqual(files.length, 0, 'Directory should be empty');
-        });
-    });
-
-    suite('Integration Tests', () => {
-        test('full hydration workflow', async () => {
-            // Create a test snapshot
-            const snapshot = `=== Flash Repo Summary ===
-Total Files: 2
-Total Characters: 50
-
-Files included:
-- /src/index.ts (25 chars)
-- /src/lib/util.ts (25 chars)
-
-=== Begin Concatenated Content ===
-=== File: /src/index.ts ===
+    suite('Hydration Integration Tests', () => {
+        test('performs full hydration successfully', async () => {
+            const snapshot = `Total Files:2
+Total Characters:50 (1K)
+$/src/index.ts|25
+$/src/lib/util.ts|25
+#/src/index.ts
 console.log('main');
+#/src/lib/util.ts
+export const util = () => {};`;
 
-=== File: /src/lib/util.ts ===
-export const util = () => {};
-`;
-
-            // Parse and hydrate
             const files = parseFlashRepoOutput(snapshot);
             const hydratedPath = await hydrateFiles(files, testDir);
 
-            // Verify results
             const indexPath = path.join(hydratedPath, 'src', 'index.ts');
             const utilPath = path.join(hydratedPath, 'src', 'lib', 'util.ts');
 
-            assert.ok(fs.existsSync(indexPath), 'Index file should exist');
-            assert.ok(fs.existsSync(utilPath), 'Util file should exist');
+            assert.ok(fs.existsSync(indexPath), 'Should create index.ts');
+            assert.ok(fs.existsSync(utilPath), 'Should create nested util.ts');
 
             const indexContent = await fs.promises.readFile(indexPath, 'utf8');
             const utilContent = await fs.promises.readFile(utilPath, 'utf8');
 
             assert.strictEqual(indexContent.trim(), "console.log('main');");
             assert.strictEqual(utilContent.trim(), "export const util = () => {};");
+        });
+
+        test('handles empty directories', async () => {
+            const snapshot = `Total Files:1
+Total Characters:25 (1K)
+$/empty/src/test.ts|25
+#/empty/src/test.ts
+test content`;
+
+            const files = parseFlashRepoOutput(snapshot);
+            const hydratedPath = await hydrateFiles(files, testDir);
+
+            const testPath = path.join(hydratedPath, 'empty', 'src', 'test.ts');
+            assert.ok(fs.existsSync(testPath), 'Should create nested directories');
+        });
+
+        test('preserves file content integrity', async () => {
+            const snapshot = `Total Files:1
+Total Characters:50 (1K)
+$/test.ts|50
+#/test.ts
+// This is a test
+function test() {
+    return true;
+}`;
+
+            const files = parseFlashRepoOutput(snapshot);
+            const hydratedPath = await hydrateFiles(files, testDir);
+
+            const testPath = path.join(hydratedPath, 'test.ts');
+            const content = await fs.promises.readFile(testPath, 'utf8');
+
+            assert.ok(content.includes('// This is a test'), 'Should preserve comments');
+            assert.ok(content.includes('function test()'), 'Should preserve function declarations');
+            assert.ok(content.includes('return true;'), 'Should preserve function content');
         });
     });
 });
