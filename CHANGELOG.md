@@ -2,7 +2,7 @@
 
 All notable changes to Flash Repo Snapshot will be documented in this file.
 
-## [3.1.0] - 2024-12-03
+## [3.3.0] - 2024-12-03
 ### Changed
 - Made extension freely available for everyone
 - Removed trial and payment requirements
