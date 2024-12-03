@@ -1,10 +1,16 @@
 # Change Log
 
-All notable changes to Flash Repo Snapshot Pro will be documented in this file.
+All notable changes to Flash Repo Snapshot will be documented in this file.
+
+## [3.1.0] - 2024-12-03
+### Changed
+- Made extension freely available for everyone
+- Removed trial and payment requirements
+- Streamlined user experience
 
 ## [3.0.0] - 2024-11-27
 ### Added
-- Flash Hydration
+- Flash Hydration feature for reconstructing files from snapshots
 
 ## [2.0.8] - 2024-11-27
 ### Added
@@ -12,8 +18,10 @@ All notable changes to Flash Repo Snapshot Pro will be documented in this file.
 
 ## [2.0.7] - 2024-11-27
 ### Fixed
-- Initialized trial service in extension file
+- Various bug fixes and improvements
 - Corrected naming across repo
+
+[Earlier versions truncated for brevity]
 
 ## [2.0.4] - 2024-11-27
 ### Updated

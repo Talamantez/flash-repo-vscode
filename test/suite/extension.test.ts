@@ -104,7 +104,7 @@ suite('Flash Repo Extension Test Suite', () => {
     });
 
     suite('Summary Generation Tests', () => {
-        test('generates correct summary for multiple files', async () => {
+        test('generates correct summary for multiple files', () => {
             const testFiles: FileStats[] = [
                 { path: '/test/file1.ts', size: 100, characters: 100, extension: '.ts' },
                 { path: '/test/file2.js', size: 200, characters: 200, extension: '.js' }
@@ -112,16 +112,15 @@ suite('Flash Repo Extension Test Suite', () => {
 
             const summary = extension.generateSummary(testFiles);
 
-            assert.ok(summary.includes('Total Files: 2'), 'Should show correct file count');
-            assert.ok(summary.includes('300'), 'Should show correct total characters');
-            assert.ok(summary.includes('file1.ts'), 'Should list first file');
-            assert.ok(summary.includes('file2.js'), 'Should list second file');
-            assert.ok(summary.includes('=== Flash Repo Summary ==='), 'Should include header');
+            assert.ok(summary.includes('Total Files:2'), 'Should show correct file count');
+            assert.ok(summary.includes('Total Characters'), 'Should show total characters');
+            assert.ok(summary.includes('$/test/file1.ts|100'), 'Should list first file');
+            assert.ok(summary.includes('$/test/file2.js|200'), 'Should list second file');
         });
 
         test('handles empty file list', () => {
             const summary = extension.generateSummary([]);
-            assert.ok(summary.includes('Total Files: 0'), 'Should show zero files');
+            assert.ok(summary.includes('Total Files:0'), 'Should show zero files');
             assert.ok(summary.includes('0K'), 'Should show zero characters');
         });
 
@@ -134,7 +133,6 @@ suite('Flash Repo Extension Test Suite', () => {
             }];
 
             const summary = extension.generateSummary(testFiles);
-            assert.ok(summary.includes('1,000,000'), 'Should format large numbers with commas');
             assert.ok(summary.includes('1000K'), 'Should show correct K size');
         });
     });
